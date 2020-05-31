@@ -65,7 +65,6 @@ app.post("/api/writer",(req,res)=>{
 })
 
 
-
 app.get("/api/comicbook",(req,res)=>{
     comicbook.find((err,doc)=>{
         res.json(doc);
