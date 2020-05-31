@@ -123,6 +123,10 @@ app.post("/api/group/update",(req,res)=>{
 
 
 
+//Team adında bir schema oluştur
+//Name, Users ( Array ), country
+//List, Insert, Update ve Delete servislerini yaz
+
 
 
 
