@@ -29,7 +29,14 @@ const groupSchema = new Schema({
     sociallinks: []
 });
 
+const teamSchema = new Schema({
+    name:String,
+    users:[],
+    country:String
+});
+
 const group = mongoose.model("groups", groupSchema);
+const team = mongoose.model("teams", teamSchema);
 
 
 var gr = new group({
@@ -127,6 +134,49 @@ app.post("/api/group/update",(req,res)=>{
 //Name, Users ( Array ), country
 //List, Insert, Update ve Delete servislerini yaz
 
+// Team listeleme
+app.get("/api/team",(req,res)=>{
+    team.find((err,doc)=>{
+        res.json(doc);
+    })
+})
+
+app.post("/api/team",(req,res)=>{
+
+    var tm = new team({
+        name : req.body.name,
+        users:req.body.users,
+        country:req.body.country
+    });
+
+    tm.save();
+
+    res.send("Inserted!")
+});
+
+app.post("/api/team/update",(req,res)=>{
+    var id = req.body.id;
+
+    team.findById(id,(err,doc)=>{
+        doc.name = req.body.name;
+        doc.country = req.body.country;
+
+        doc.save();
+
+    });
+
+    res.send("Updated!");
+});
+
+app.post("/api/team/delete",(req,res)=>{
+    var id = req.body.id;
+
+    team.findByIdAndDelete(id,(err,doc)=>{
+        if(!err){
+            res.send("Deleted!!");
+        }
+    })
+})
 
 
 
