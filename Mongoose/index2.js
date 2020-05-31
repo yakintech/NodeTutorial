@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 mongoose.connect(`mongodb+srv://azra_elturco:1996417B@cluster417-vl3kd.mongodb.net/test?authSource=admin&replicaSet=Cluster417-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true
 `, { useNewUrlParser: true });
 
+const { check, validationResult } = require('express-validator');
 const express = require('express');
 const app = express();
 
@@ -39,11 +40,11 @@ var gr = new group({
     followers: 743000,
     monthlylisteners: 1419000,
     albums: [
-        {name:"I, the Mask",year:2019},
-        {name:"Battles",year:2016},
-        {name:"Clayman",year:2000},
+        { name: "I, the Mask", year: 2019 },
+        { name: "Battles", year: 2016 },
+        { name: "Clayman", year: 2000 },
 
-]
+    ]
 });
 
 // gr.save((err, doc) => {
@@ -56,12 +57,29 @@ var gr = new group({
 // });
 
 
-app.post("/api/group", (req, res) => {
+app.post("/api/group", [
+    check("name").notEmpty(),
+    check("name").isLength({ min: 3 })
+], (req, res) => {
 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
+    var gr = new group({
+        name: req.body.name,
+        description: req.body.description,
+        followers: req.body.followers
+    });
+
+    gr.save();
+
+    res.send("Success!!");
 });
 
 
-app.get("/api/groups",(req,res)=>{
+app.get("/api/group", (req, res) => {
 
     //tüm grupları listeler
     // group.find((err,doc)=>{
@@ -69,18 +87,54 @@ app.get("/api/groups",(req,res)=>{
     // })
 
     //name tersten sırala ve 2 tanesini getir
-    group.find().limit(2).sort({'name':-1}).exec((err,doc)=>{
+    group.find().limit(2).sort({ 'name': -1 }).exec((err, doc) => {
         res.json(doc);
     });
 
 
 });
 
-group.find({"albums.name":"Clayman"},(err,doc)=>{
-   // console.log(doc);
+app.post("/api/group/delete",(req,res)=>{
+    var id = req.body.id;
+
+    group.findByIdAndDelete(id,(err,doc)=>{
+        if(!err){
+            res.send("Deleted!");
+        }
+    })
+});
+
+
+app.post("/api/group/update",(req,res)=>{
+    var id = req.body.id;
+
+    group.findById(id,(err,doc)=>{
+        if(!err){
+
+            doc.name = req.body.name;
+            doc.description = req.body.description;
+
+            doc.save();
+
+            res.send("Updated!");
+        }
+    })
 })
 
-group.find().where('followers').gt(700000).lt(800000).exec((err,doc)=>{
+
+
+
+
+
+
+
+
+
+group.find({ "albums.name": "Clayman" }, (err, doc) => {
+    // console.log(doc);
+})
+
+group.find().where('followers').gt(700000).lt(800000).exec((err, doc) => {
     //console.log(doc);
 })
 
