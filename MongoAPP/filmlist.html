@@ -12,6 +12,7 @@
 
 <div class="container">
   <h2 style="text-align: center;">Films</h2>
+  <button class="btn btn-primary" style="float: right;" data-toggle="modal" data-target="#exampleModal">Add Film</button>
   <table class="table">
     <thead>
       <tr>
@@ -19,6 +20,7 @@
         <th>Director</th>
         <th>Year</th>
         <th>Delete</th>
+        <th>Update</th>
       </tr>
     </thead>
     <tbody>
@@ -27,6 +29,69 @@
   </table>
 </div>
 
+<!--Add Film Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Film</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="">Name</label>
+                <input type="text" id="name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="">Director</label>
+                <input type="text" id="director" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="">Year</label>
+                <input type="text" id="year" class="form-control">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="addfilm">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Update Film Modal -->
+<div class="modal fade" id="updatefilmmodal" tabindex="-1" role="dialog" aria-labelledby="updatefilmmodal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Update Film</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="">Name</label>
+                <input type="text" id="uname" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="">Director</label>
+                <input type="text" id="udirector" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="">Year</label>
+                <input type="text" id="uyear" class="form-control">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="updatefilm">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 <script>
     $.getJSON("http://localhost:3001/api/film",(data)=>{
@@ -37,7 +102,7 @@
                 <td>`+item.director+`</td>
                 <td>`+item.year+`</td>
                 <td><button id="`+item._id+`" class="btn btn-danger">Delete</button></td>
-
+                <td><button id="`+item._id+`" class="btn btn-info" data-toggle="modal" data-target="#updatefilmmodal">Update</button></td>
                 </tr>`)
         })
     })
@@ -48,15 +113,71 @@
         var deletefilm = new Object();
         deletefilm.id = $(this).attr("id");
         
+        //butona bastıktan sonra silinecek id sunucuya yollanır (ajax ile)
         $.ajax({
             url:"http://localhost:3001/api/film/delete",
             data:deletefilm,
             type:"POST",
             success:function(){
+                // sunucu ok döndüğü takdirde tasarimdan da silinir
                $("." +  deletefilm.id).fadeOut(1000);
             }
         })
     })
+
+    $(document).on("click","#addfilm",function(){
+
+        //kaydet butonuna bastıktan sonra inputlardaki değerler alınır ve sunucuya yollanır
+        var newfilm = new Object();
+        newfilm.name = $("#name").val();
+        newfilm.director = $("#director").val();
+        newfilm.year = $("#year").val();
+
+        $.ajax({
+            url:"http://localhost:3001/api/film",
+            data:newfilm,
+            type:"POST",
+            success:function(){
+                //sunucuyu ok verdikten sonra datalarımı görmek için sayfayı yeniliyorum
+                window.location.href="filmlist.html";
+            }
+        })
+
+    })
+
+    //butona bastıktan sonra sunucuya id yollar. gelen datayı mevcut inputlara basar!
+    var updateid = 0;
+    $(document).on("click",".btn-info",function(){
+        var id = $(this).attr("id");
+        updateid = $(this).attr("id");
+        $.getJSON("http://localhost:3001/api/film/" + id,function(data){
+            $("#uname").val(data.name);
+            $("#udirector").val(data.director);
+            $("#uyear").val(data.year);
+
+        })
+
+    })
+
+    //kullanıcı update modaldaki save butonunu tıkladıysa
+    $(document).on("click","#updatefilm",function(){
+        var updatefilm = new Object();
+        updatefilm.name = $("#uname").val();
+        updatefilm.director = $("#udirector").val();
+        updatefilm.year = $("#uyear").val();
+        updatefilm.id = updateid;
+
+        $.ajax({
+            url:"http://localhost:3001/api/film/update",
+            type:"POST",
+            data:updatefilm,
+            success:function(){
+                location.href = "filmlist.html";
+            }
+        })
+
+    })
+
 </script>
 </html>
 

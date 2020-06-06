@@ -59,7 +59,35 @@ app.post("/api/film/delete",(req,res)=>{
             res.status(500).send("Error!");
         }
     })
+});
+
+app.get("/api/film/:id",(req,res)=>{
+    var id = req.params.id;
+
+    mongo.film.findById(id,(err,doc)=>{
+        if(!err){
+            res.json(doc);
+        }
+        else{
+            res.status(500).send("Error!");
+        }
+    })
+});
+
+app.post("/api/film/update",(req,res)=>{
+    var id = req.body.id;
+
+    mongo.film.findById(id,(err,doc)=>{
+        doc.name = req.body.name;
+        doc.director = req.body.director;
+        doc.year = req.body.year;
+
+        doc.save();
+        res.send("OK");
+    })
 })
+
+
 
 app.listen(3001);
 
