@@ -7,7 +7,11 @@ const Schema = mongoose.Schema;
 const filmSchema = new Schema({
     name:String,
     director:String,
-    year:String
+    year:String,
+    deleteddate:Date,
+    inserteddate:{type:Date,default:Date.now()},
+    updateddate:{type:Date,default:Date.now()},
+    isdeleted:{type:Boolean,default:false}
 });
 
 const film = mongoose.model("film",filmSchema);
