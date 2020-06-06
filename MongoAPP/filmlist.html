@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h2 style="text-align: center;">Films</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Director</th>
+        <th>Year</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+  </table>
+</div>
+
+</body>
+<script>
+    $.getJSON("http://localhost:3001/api/film",(data)=>{
+        $.map(data,function(item){
+
+            $("tbody").append(`<tr class="`+item._id+`">
+                <td>`+item.name+`</td>
+                <td>`+item.director+`</td>
+                <td>`+item.year+`</td>
+                <td><button id="`+item._id+`" class="btn btn-danger">Delete</button></td>
+
+                </tr>`)
+        })
+    })
+
+    //sil butonuna bastığında filmin id sinin post edilmesi gerekli!!
+    $(document).on("click",".btn-danger",function(){
+
+        var deletefilm = new Object();
+        deletefilm.id = $(this).attr("id");
+        
+        $.ajax({
+            url:"http://localhost:3001/api/film/delete",
+            data:deletefilm,
+            type:"POST",
+            success:function(){
+               $("." +  deletefilm.id).fadeOut(1000);
+            }
+        })
+    })
+</script>
+</html>
+
