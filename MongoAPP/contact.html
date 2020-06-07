@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <title>Document</title>
+</head>
+
+<body>
+    <h1 style="text-align: center;">Contact Page</h1>
+    <div class="container">
+        <div class="form-group">
+            <label for="">Name</label>
+            <input type="text" class="form-control" id="name">
+        </div>
+        <div class="form-group">
+            <label for="">Surname</label>
+            <input type="text" class="form-control" id="surname">
+        </div>
+        <div class="form-group">
+            <label for="">Phone</label>
+            <input type="text" class="form-control" id="phone">
+        </div>
+        <div class="form-group">
+            <label for="">Message</label>
+            <textarea name="" id="message" cols="30" rows="10" class="form-control"></textarea>
+        </div>
+        <div>
+            <button class="btn btn-primary">Send</button>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    $("button").click(function(){
+        var email = new Object();
+        email.name = $("#name").val();
+        email.surname = $("#surname").val();
+        email.phone = $("#phone").val();
+        email.message = $("#message").val();
+
+        $.ajax({
+          url:"http://localhost:3001/api/email",
+          data:email,
+          type:"POST",
+          success:function(){
+              alert("EMail başarıyla gönderildi. Teşekkürlerrrrrrr!")
+          }
+
+        })
+
+    })
+</script>
+
+</html>

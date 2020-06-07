@@ -3,6 +3,15 @@ const app = express();
 
 var bodyParser = require("body-parser");
 var mongo = require('./mongoschema');
+var nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'bilgebatman19@gmail.com',
+      pass: 'Superman!35'
+    }
+  });
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
@@ -95,6 +104,28 @@ app.post("/api/film/update", (req, res) => {
         doc.save();
         res.send("OK");
     })
+});
+
+app.post("/api/email",(req,res)=>{
+
+    var mailOptions = {
+        from: 'bilgebatman19@gmail.com',
+        to: 'cagatayyildiz87@gmail.com',
+        subject: 'Contact',
+        text: req.body.name + " " + req.body.surname + " den gelen iletişim mesajı : " + req.body.message
+      };
+
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+          res.send("Email gönderildi!")
+        }
+      });
+
+
 })
 
 
