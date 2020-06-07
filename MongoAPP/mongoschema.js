@@ -14,10 +14,18 @@ const filmSchema = new Schema({
     isdeleted:{type:Boolean,default:false}
 });
 
-const film = mongoose.model("film",filmSchema);
+const adminuserSchema =new Schema({
+    Email:String,
+    Password:String,
+    inserteddate:{type:Date,default:Date.now()},
+    isdeleted:{type:Boolean,default:false}
+})
 
+const film = mongoose.model("film",filmSchema);
+const adminuser = mongoose.model("adminuser",adminuserSchema);
 module.exports={
-    film
+    film,
+    adminuser
 }
 
 //AdminUser isimli bir schema olustur. EMail, Password, AddDate, Isdeleted (adddate ve isdeleted default değerler)

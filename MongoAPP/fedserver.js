@@ -1,6 +1,12 @@
 const express = require('express');
 const app = express();
 const request = require('request');
+var md5 = require('md5');
+var crypto = require('crypto');
+
+const hash = crypto.createHash('sha256').update("çağatay").digest('hex');
+
+console.log(hash);
 
 var url = "https://api.stoplight.io/v1/versions/9WaNJfGpnnQ76opqe/export/oas.json";
 
@@ -111,6 +117,35 @@ app.post("/api/film/update", (req, res) => {
         res.send("OK");
     })
 });
+
+app.post("/api/adminuser",(req,res)=>{
+    var au = new mongo.adminuser({
+        Email : req.body.email,
+        Password : md5(req.body.password),
+    });
+
+    au.save((err,doc)=>{
+        if(!err){
+            res.send("OK!");
+        }
+        else{
+            res.status(500).send("Error!");
+        }
+    })
+});
+
+app.get("/api/adminuser",(req,res)=>{
+    mongo.adminuser.find({isdeleted:false},(err,doc)=>{
+        if(!err){
+            res.json(doc);
+        }
+        else{
+            res.status(500).send("Error!");
+        }
+    })
+})
+
+
 
 app.post("/api/email",(req,res)=>{
 
