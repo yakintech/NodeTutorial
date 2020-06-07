@@ -1,5 +1,12 @@
 const express = require('express');
 const app = express();
+const request = require('request');
+
+var url = "https://api.stoplight.io/v1/versions/9WaNJfGpnnQ76opqe/export/oas.json";
+
+request.get(url,(err, res, body)=>{
+    //console.log(body);
+})
 
 var bodyParser = require("body-parser");
 var mongo = require('./mongoschema');
@@ -21,7 +28,6 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-
 
 
 app.post("/api/film", (req, res) => {

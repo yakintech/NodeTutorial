@@ -20,3 +20,9 @@ module.exports={
     film
 }
 
+//AdminUser isimli bir schema olustur. EMail, Password, AddDate, Isdeleted (adddate ve isdeleted default değerler)
+
+//AdminUser isimli schemanın insert postunu yaz ve postmandan test et
+
+//AdminUser isimli schemanın listelemesini yap(isdeleted false olanlar gelecek)
+
